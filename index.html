@@ -694,6 +694,34 @@ function getSignalClass(v) {
   return 'critical';
 }
 
+// =================== URL PARAMS FALLBACK ===================
+// Lê dados da URL quando vindo de domínio diferente (ex: funil → membros separado)
+(function() {
+  try {
+    var params = new URLSearchParams(window.location.search);
+
+    // Restaura quiz answers no localStorage
+    var answersParam = params.get('answers');
+    if(answersParam) {
+      var ans = JSON.parse(answersParam);
+      Object.keys(ans).forEach(function(k){ localStorage.setItem(k, ans[k]); });
+    }
+
+    // Restaura dados no sessionStorage
+    if(params.get('key'))   sessionStorage.setItem('profileKey',    params.get('key'));
+    if(params.get('score')) sessionStorage.setItem('profileScore',  params.get('score'));
+    if(params.get('nome'))  sessionStorage.setItem('nome_suspeito', params.get('nome'));
+    if(params.get('oto'))   sessionStorage.setItem('comprou_oto1',  params.get('oto'));
+
+    // Foto vem no hash (#foto=base64...)
+    var hash = window.location.hash;
+    if(hash && hash.indexOf('#foto=') === 0) {
+      var fotoDecoded = decodeURIComponent(hash.slice(6));
+      if(fotoDecoded) sessionStorage.setItem('foto_base64', fotoDecoded);
+    }
+  } catch(e) {}
+})();
+
 // =================== RENDER ===================
 
 var score    = getScore();
