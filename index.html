@@ -235,27 +235,40 @@
 
   /* ---- SIGNAL CARDS ---- */
   .sig-card {
-    border-radius: 12px;
-    padding: 14px;
-    margin-bottom: 10px;
-    border-left: 3px solid;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid;
+    position: relative;
+    overflow: hidden;
   }
   .sig-card:last-child { margin-bottom: 0; }
-  .sig-card.low      { background: rgba(34,197,94,0.04);  border-color: var(--green);  }
-  .sig-card.moderate { background: rgba(234,179,8,0.04);  border-color: var(--yellow); }
-  .sig-card.elevated { background: rgba(249,115,22,0.05); border-color: var(--orange); }
-  .sig-card.critical { background: rgba(239,35,60,0.06);  border-color: var(--red);    }
-  .sig-header {
+  .sig-card.low      { background: rgba(34,197,94,0.04);  border-color: rgba(34,197,94,0.2);  }
+  .sig-card.moderate { background: rgba(234,179,8,0.04);  border-color: rgba(234,179,8,0.2);  }
+  .sig-card.elevated { background: rgba(249,115,22,0.05); border-color: rgba(249,115,22,0.25); }
+  .sig-card.critical { background: rgba(239,35,60,0.06);  border-color: rgba(239,35,60,0.25); }
+  .sig-card-top {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 6px;
-    gap: 8px;
+    gap: 10px;
+    margin-bottom: 10px;
   }
-  .sig-name { font-family: 'Manrope', sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--text); }
+  .sig-icon-wrap {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .sig-icon-wrap.low      { background: rgba(34,197,94,0.12);  color: var(--green);  }
+  .sig-icon-wrap.moderate { background: rgba(234,179,8,0.12);  color: var(--yellow); }
+  .sig-icon-wrap.elevated { background: rgba(249,115,22,0.12); color: var(--orange); }
+  .sig-icon-wrap.critical { background: rgba(239,35,60,0.12);  color: var(--red);    }
+  .sig-top-right { flex: 1; min-width: 0; }
+  .sig-name { font-family: 'Manrope', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .sig-label-small { font-family: 'Roboto Mono', monospace; font-size: 0.5rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 1px; }
   .sig-level {
     font-family: 'Roboto Mono', monospace;
-    font-size: 0.5rem;
+    font-size: 0.48rem;
     padding: 2px 7px;
     border-radius: 100px;
     text-transform: uppercase;
@@ -266,15 +279,45 @@
   .sig-level.moderate { background: rgba(234,179,8,0.15);  color: var(--yellow); }
   .sig-level.elevated { background: rgba(249,115,22,0.15); color: var(--orange); }
   .sig-level.critical { background: rgba(239,35,60,0.15);  color: var(--red);    }
+  .sig-bar-wrap {
+    height: 3px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .sig-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1s ease;
+  }
+  .sig-bar-fill.low      { background: var(--green);  width: 20%; }
+  .sig-bar-fill.moderate { background: var(--yellow); width: 50%; }
+  .sig-bar-fill.elevated { background: var(--orange); width: 75%; }
+  .sig-bar-fill.critical { background: var(--red);    width: 100%; }
+  .sig-insight {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text);
+    padding: 8px 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    line-height: 1.45;
+  }
+  .sig-insight.low      { background: rgba(34,197,94,0.08);  border-left: 2px solid var(--green);  }
+  .sig-insight.moderate { background: rgba(234,179,8,0.08);  border-left: 2px solid var(--yellow); }
+  .sig-insight.elevated { background: rgba(249,115,22,0.08); border-left: 2px solid var(--orange); }
+  .sig-insight.critical { background: rgba(239,35,60,0.08);  border-left: 2px solid var(--red);    }
   .sig-answer {
-    font-size: 0.74rem;
+    font-size: 0.72rem;
     color: var(--text-dim);
     font-style: italic;
-    padding: 4px 8px;
-    border-left: 2px solid rgba(255,255,255,0.07);
-    margin-bottom: 6px;
+    padding: 5px 8px;
+    background: rgba(255,255,255,0.02);
+    border-radius: 6px;
+    margin-bottom: 8px;
   }
-  .sig-interp { font-size: 0.8rem; color: var(--text-muted); line-height: 1.55; }
+  .sig-interp { font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
 
   /* ---- CONVERGENCE ---- */
   .conv-item {
@@ -516,103 +559,183 @@ var PROFILES = {
 
 var SIGNAL_DATA = [
   {
-    name: 'Sinal 1 — Comportamento com o celular',
+    name: 'Celular',
+    icon: 'lucide:smartphone',
+    label: 'Comportamento com o celular',
     weight: 'Alto peso diagnóstico',
+    insight: [
+      'Nenhum sinal de ocultamento digital detectado.',
+      'Leve aumento na privacidade — pode ser hábito novo ou necessidade de espaço.',
+      'Proteção ativa do celular é o marcador #1 de ocultamento. Ele protege a tela porque há algo que você não pode ver.',
+      'Bloqueio imediato na sua presença é comportamento automático de quem mantém comunicação ativa com outra pessoa. Não se faz isso por acidente.'
+    ],
     interps: [
-      'Nenhuma alteração significativa no comportamento com o celular foi registrada. Este sinal é neutro e não contribui para indicação de risco.',
-      'Uma leve mudança nos hábitos com o celular foi percebida. Em baixa intensidade, pode ser atribuída a privacidade pessoal ou mudanças de rotina no trabalho.',
-      'Proteção ativa do celular é um dos sinais com maior correlação com comportamento de ocultamento. A troca de tela e o aumento do sigilo são padrões clássicos de quem tem algo a esconder.',
-      'Celular permanentemente protegido e bloqueio imediato na sua presença é o sinal de celular mais crítico identificado. Em 91% dos casos analisados com este padrão, foi confirmado algum nível de dupla comunicação.'
+      'O celular permanece acessível e o comportamento não mudou. Isso é positivo — quem não tem o que esconder não cria barreiras digitais. Este sinal não contribui para risco.',
+      'Uma mudança leve nos hábitos foi identificada. Antes de concluir qualquer coisa, observe: ele troca de tela quando você chega perto? Tem senha nova sem explicação? Se sim, o padrão pode estar se formando.',
+      'Quando o celular vira um objeto protegido — sempre virado para baixo, sempre com senha, nunca carregado perto de você — é porque ele passou a ser um canal de comunicação que ele não quer que você veja. Isso não é paranoia sua. É um padrão comportamental documentado e consistente.',
+      'Ele bloqueia o celular imediatamente quando você se aproxima. Isso é um reflexo condicionado — ele faz isso porque aprendeu que precisa fazer. Significa que há conversas ativas, fotos ou apps que ele sabe que mudariam tudo se você vissem. Você não precisa de prova maior do que o comportamento em si.'
     ]
   },
   {
-    name: 'Sinal 2 — Intimidade e vida sexual',
+    name: 'Intimidade',
+    icon: 'lucide:heart',
+    label: 'Intimidade e vida sexual',
     weight: 'Alto peso diagnóstico',
+    insight: [
+      'Conexão física e emocional estável — sinal forte de ausência de envolvimento externo.',
+      'Queda moderada na frequência — pode ter causas simples como estresse ou cansaço.',
+      'Queda simultânea de intimidade física e emocional é o padrão mais comum em traições ativas.',
+      'Desinteresse físico abrupto ou comportamento mecânico indica que a energia afetiva foi redirecionada.'
+    ],
     interps: [
-      'A frequência e qualidade da intimidade permanecem consistentes. Este é um dos sinais mais confiáveis de ausência de envolvimento externo ativo.',
-      'Uma diminuição moderada foi identificada. Isoladamente, pode ter múltiplas causas: estresse, cansaço, mudança hormonal. Não é conclusivo.',
-      'Queda significativa na intimidade combinada com distância emocional forma um padrão de alto risco. Quando a conexão física e emocional diminuem simultaneamente, costuma haver um terceiro elemento na equação.',
-      'Ausência quase total de intimidade ou comportamento mecânico é um sinal crítico. O desinteresse físico abrupto é frequentemente relatado por mulheres que confirmaram traição posterior.'
+      'A intimidade permanece consistente e natural. De todos os sinais analisados, este é um dos mais difíceis de falsificar por muito tempo. Sua presença é um indicador positivo relevante.',
+      'Uma diminuição foi percebida, mas ainda dentro de um espectro que pode ter várias explicações: estresse no trabalho, cansaço, preocupações financeiras, questões hormonais. Isoladamente, não é suficiente. Observe se outros sinais também mudaram no mesmo período.',
+      'Quando a frequência cai e a qualidade também piora — sem que nenhum evento externo justifique — é porque a energia afetiva dele está sendo direcionada para outro lugar. O corpo tem dificuldade de manter dois focos de atenção sexual ao mesmo tempo. O distanciamento físico com você muitas vezes é proporcional ao envolvimento com outra pessoa.',
+      'A ausência quase total de intimidade, ou o comportamento mecânico sem conexão real, é um dos sinais relatados com mais frequência por mulheres que confirmaram traição. Não é que ele perdeu o interesse em sexo — é que ele perdeu o interesse em sexo com você. Essa distinção é importante e dolorosa.'
     ]
   },
   {
-    name: 'Sinal 3 — Padrão de saídas e ausências',
+    name: 'Ausências',
+    icon: 'lucide:clock',
+    label: 'Padrão de saídas e ausências',
     weight: 'Peso moderado',
+    insight: [
+      'Rotina estável e previsível. Sem alterações suspeitas nos padrões de saída.',
+      'Algumas saídas extras com explicações plausíveis — ainda dentro do normal.',
+      'Ausências com horários alterados são consistentes com tempo reservado para encontros.',
+      'Justificativas vagas ou contraditórias são mais reveladoras do que as próprias ausências.'
+    ],
     interps: [
-      'Nenhuma mudança no padrão de saídas foi detectada. A rotina permanece estável e previsível.',
-      'Algumas saídas adicionais com justificativas razoáveis. Pode ser real — trabalho, amigos, família. Não é suficiente para indicação de risco isoladamente.',
-      'Aumento nas ausências com horários alterados é um padrão consistente com disponibilidade para encontros externos. A mudança de horário é um marcador importante.',
-      'Saídas frequentes com justificativas vagas ou contraditórias é o padrão de maior risco neste sinal. A incoerência das explicações é mais reveladora do que as ausências em si.'
+      'O padrão de saídas e retornos permanece o mesmo. Rotina previsível é um dos sinais mais tranquilizadores — quem mantém vida dupla precisa de tempo extra, e esse tempo aparece no dia a dia.',
+      'Há algumas saídas adicionais, mas com justificativas que fazem sentido. Por enquanto, nada conclusivo. O que vale observar é a consistência das explicações: elas se confirmam? Os horários batem? As histórias são coerentes ao longo do tempo?',
+      'Ausências com horários que mudaram sem uma razão clara — saindo mais cedo, chegando mais tarde, "compromissos" novos que apareceram do nada — são o tipo de padrão que pessoas em dupla vida precisam criar. Ele precisa de espaço físico para existir fora do seu radar. Este sinal, junto com outros, forma um indicador importante.',
+      'As explicações são vagas, mudam de versão ou simplesmente não fazem sentido quando você pensa com calma. Isso é relevante porque quem não mente não precisa lembrar o que disse. A incoerência nas justificativas — mais do que as ausências em si — é o marcador real aqui.'
     ]
   },
   {
-    name: 'Sinal 4 — Distanciamento emocional',
+    name: 'Emoção',
+    icon: 'lucide:brain',
+    label: 'Distanciamento emocional',
     weight: 'Alto peso diagnóstico',
+    insight: [
+      'Presença emocional estável — engajamento e atenção mantidos.',
+      'Leve distração ou distância — pode ser pressão externa temporária.',
+      'Redirecionamento emocional para fora do relacionamento — sinal frequentemente subestimado.',
+      'Frieza sistemática sem evento que justifique indica desconexão emocional severa.'
+    ],
     interps: [
-      'Presença emocional estável e consistente. Não há indicação de redirecionamento afetivo para terceiros.',
-      'Leve distração identificada. Pode ser pressão externa — trabalho, projetos, preocupações pessoais. Monitorar evolução.',
-      'Distância emocional significativa é um dos sinais mais subestimados e mais reveladores. Quando alguém redireciona a atenção emocional para fora do relacionamento, o parceiro sente — mesmo sem saber por quê.',
-      'Frieza sistemática e tratamento indiferente dentro do relacionamento indica desconexão emocional severa. Este nível de distância raramente ocorre sem causa externa.'
+      'Ele está emocionalmente presente. Responde, se importa, demonstra interesse pela sua vida. Esse tipo de engajamento é difícil de manter se houver um investimento emocional paralelo acontecendo. Este sinal é positivo.',
+      'Uma leve distância foi percebida — aquela sensação de que ele está "presente mas ausente". Antes de concluir, considere: há algo acontecendo na vida dele? Trabalho, família, saúde? Às vezes o distanciamento é real mas tem origem legítima. Acompanhe a evolução.',
+      'Quando alguém começa a investir emocionalmente em outra pessoa, o parceiro percebe — mesmo sem saber o porquê. Você começa a sentir que as conversas ficaram mais rasas, que ele não compartilha mais o que pensa, que a intimidade emocional sumiu. Isso acontece porque ela foi embora. Simplesmente foi para outro lugar.',
+      'O tratamento frio e indiferente, sem que nenhum conflito específico o justifique, é um sinal de alerta alto. Não é que ele ficou "difícil" — é que ele desconectou. O investimento emocional dele mudou de endereço. E isso, combinado com outros sinais, raramente tem outra explicação.'
     ]
   },
   {
-    name: 'Sinal 5 — Evidências encontradas',
+    name: 'Evidências',
+    icon: 'lucide:search',
+    label: 'Evidências encontradas',
     weight: 'Peso decisivo',
+    insight: [
+      'Nenhum elemento suspeito encontrado — sinal direto e positivo.',
+      'Um episódio isolado com explicação aceita — pode ser verdade ou início de padrão de negação.',
+      'Elementos ambíguos que geraram desconforto real merecem atenção, não descarte.',
+      'Evidências concretas já existem. A questão agora não é "se" — é o que fazer.'
+    ],
     interps: [
-      'Nenhuma evidência suspeita foi relatada. Este é o sinal mais direto e sua ausência contribui significativamente para a indicação de baixo risco.',
-      'Uma ocorrência com explicação aceita. A aceitação da explicação pode ser real ou pode ser o início de um padrão de negação bem construído.',
-      'Elementos que geraram desconforto sem conclusão definitiva formam um padrão de alerta. A dificuldade de classificar o que foi encontrado é, em si, um sinal.',
-      'Evidências concretas já encontradas — conversas, apps, prints — é o sinal de maior peso nesta análise. Evidências existem. A questão agora é o que fazer com elas.'
+      'Você procurou e não encontrou nada. Isso conta. Não é prova absoluta de nada — mas é um dado real. Quem mantém vida dupla deixa rastros, e a ausência deles é um fator importante nesta análise.',
+      'Você encontrou algo uma vez, ele explicou, e você aceitou a explicação. Pode ser verdade. Mas vale observar: a explicação foi natural ou pareceu ensaiada? Ele ficou irritado com a pergunta ou foi empático? A forma como alguém reage quando você encontra algo diz mais do que o próprio conteúdo encontrado.',
+      'Você encontrou coisas que te deixaram desconfortável mas não chegou a uma conclusão. Esse estado de "não sei o que pensar" é exatamente o que pessoas em dupla vida tentam criar — evidências suficientemente ambíguas para que você se questione em vez de questioná-lo. Se o que você viu te perturbou, confie nisso.',
+      'Você já tem evidências concretas — conversas, prints, apps, fotos, mensagens. O que isso muda? Muda tudo. Não porque você precisava de provas para validar sua percepção — você já sabia. Mas porque agora você tem algo real nas mãos. A questão que este dossiê vai te ajudar a responder é: o que você vai fazer com isso?'
     ]
   },
   {
-    name: 'Sinal 6 — Presença nas redes sociais',
+    name: 'Redes',
+    icon: 'lucide:share-2',
+    label: 'Presença nas redes sociais',
     weight: 'Peso moderado',
+    insight: [
+      'Comportamento nas redes consistente com relacionamento assumido.',
+      'Menos exposição conjunta — pode ser mudança de hábito ou privacidade.',
+      'Apagamento ativo do relacionamento nas redes é posicionamento deliberado como disponível.',
+      'Curadoria de imagem de "solteiro" enquanto mantém relacionamento exige esforço consciente.'
+    ],
     interps: [
-      'Comportamento nas redes sociais consistente com relacionamento assumido. Sem alterações relevantes.',
-      'Redução na exposição conjunta pode ter múltiplas causas — privacidade pessoal, mudança de hábitos. Não conclusivo isoladamente.',
-      'Apagamento ativo da presença do relacionamento nas redes é um comportamento de ocultamento deliberado. Quem apaga o casal está se posicionando como disponível para quem olha de fora.',
-      'Comportamento de solteiro nas redes enquanto mantém relacionamento é um dos padrões mais reveladores. A curadoria da imagem pública de solteiro exige esforço consciente.'
+      'As redes sociais dele continuam refletindo o relacionamento de vocês — fotos juntos, referências, comportamento consistente com quem está comprometido. Quem está construindo uma imagem paralela geralmente começa a apagar essa presença. Aqui não há sinais disso.',
+      'Você notou menos exposição conjunta — menos fotos, menos marcações. Pode ser mudança de hábito mesmo, questão de privacidade ou afastamento das redes em geral. Mas vale observar: ele continua aparecendo nas redes normalmente só para o público geral? Se sim, o apagamento é seletivo.',
+      'Quando alguém começa a remover fotos do casal, para de te marcar, deixa de se identificar como "em um relacionamento" — isso é comportamento de quem está se posicionando como disponível para uma audiência específica. Não precisa ser anunciado. O silêncio nas redes fala.',
+      'Ele age como solteiro nas redes enquanto mantém relacionamento com você. Isso é gestão ativa de imagem — implica escolhas deliberadas sobre o que postar, o que esconder, qual versão de si mesmo mostrar para qual público. Não é esquecimento. É estratégia.'
     ]
   },
   {
-    name: 'Sinal 7 — Reação a perguntas e questionamentos',
+    name: 'Reações',
+    icon: 'lucide:alert-triangle',
+    label: 'Reação a perguntas e questionamentos',
     weight: 'Alto peso diagnóstico',
+    insight: [
+      'Responde perguntas com naturalidade — comportamento de quem não tem o que esconder.',
+      'Defensividade ocasional — pode ser traço de personalidade ou insegurança.',
+      'Acusação de paranoia é técnica de inversão clássica — transforma sua pergunta em seu problema.',
+      'Explosão ou esquiva total: a intensidade da reação é proporcional ao tamanho do que está sendo protegido.'
+    ],
     interps: [
-      'Responde a questionamentos de forma natural e sem defensividade. Este padrão é característico de quem não tem o que esconder.',
-      'Defensividade ocasional pode ser personalidade ou insegurança. Não suficiente para indicação sem outros sinais.',
-      'Irritabilidade frequente e acusação de paranoia é uma técnica clássica de inversão. Transformar sua pergunta legítima num problema seu é uma forma de encerrar a investigação.',
-      'Explosão, ataque ou esquiva completa na presença de questionamentos é o padrão de maior risco neste sinal. A intensidade da reação é proporcional ao tamanho do que está sendo protegido.'
+      'Quando você pergunta algo, ele responde com naturalidade — sem irritação desproporcional, sem virar o assunto, sem fazer você se sentir errada por ter perguntado. Isso é o comportamento esperado de quem não tem nada a esconder. Este sinal é positivo e tem peso real.',
+      'Ele fica na defensiva às vezes, mas não de forma sistemática. Personalidade, insegurança pessoal ou experiências passadas podem explicar isso. O que diferencia defensividade normal de comportamento suspeito é a consistência: ele fica assim especificamente quando você pergunta sobre coisas que envolvam onde estava, com quem ou o celular?',
+      'Toda vez que você tenta entender algo, a conversa vira contra você. "Você é muito ciumenta." "Você não confia em ninguém." "Isso é problema seu." Isso tem nome: DARVO (Deny, Attack, Reverse Victim and Offender). É uma técnica — consciente ou não — de encerrar a investigação fazendo você se questionar em vez de questioná-lo. Não é coincidência.',
+      'Quando você pergunta, ele explode, ataca ou simplesmente fecha completamente — não há meio-termo. Isso não é característica de personalidade, é reação de quem sente que está sendo encurralado. A intensidade da reação costuma ser proporcional ao tamanho do que está sendo protegido. Fique com isso.'
     ]
   },
   {
-    name: 'Sinal 8 — Mudanças na aparência e cuidado pessoal',
+    name: 'Aparência',
+    icon: 'lucide:sparkles',
+    label: 'Mudanças na aparência e cuidado pessoal',
     weight: 'Peso moderado',
+    insight: [
+      'Aparência e hábitos de cuidado estáveis — sem transformações inexplicadas.',
+      'Melhora leve — pode ser saúde, trabalho ou influência de amigos.',
+      'Cuidado novo sem te incluir nisso: a motivação provavelmente é externa.',
+      'Transformação abrupta e sem explicação é quase universal em relatos de traição confirmada.'
+    ],
     interps: [
-      'Nenhuma mudança significativa na aparência ou nos hábitos de cuidado. Padrão estável.',
-      'Melhora leve que pode estar associada a motivação profissional, saúde ou influência social. Não conclusivo.',
-      'Mudança notável na aparência sem envolvimento do parceiro é um sinal de atenção. Quando alguém começa a se cuidar mais mas não te inclui nessa transformação, a motivação provavelmente é externa.',
-      'Mudança drástica e abrupta no cuidado pessoal sem explicação é consistente com o comportamento de alguém que está tentando impressionar uma nova pessoa. É quase universal em relatos de traição confirmada.'
+      'Nenhuma mudança abrupta na aparência ou nos hábitos de cuidado foi relatada. Esse tipo de transformação — academia, roupa nova, perfume diferente — aparece com frequência em relatos de traição porque o envolvimento com uma nova pessoa traz motivação para impressionar. A estabilidade aqui é um bom sinal.',
+      'Uma melhora leve foi notada. Pode ter origem simples: uma meta pessoal, influência de amigos, motivação no trabalho. Não é suficiente para indicar risco por si só. O que muda o peso desse sinal é se a transformação veio acompanhada de outros comportamentos desta análise.',
+      'Ele começou a se cuidar mais — e você não foi incluída nisso. Não é que ficou melhor para os dois. É que ficou melhor sem você, sem comentar, sem perguntar o que você acha. Quando a transformação não inclui o parceiro, ela está sendo feita para outra audiência.',
+      'A mudança foi abrupta — academia, roupas novas, perfume diferente, corte de cabelo — sem nenhum evento na vida dele que justifique. Esse padrão aparece em quase todos os relatos de traição confirmada: a pessoa começa a se reinventar porque está sendo vista por alguém novo e quer impressionar. É difícil de falsificar por muito tempo.'
     ]
   },
   {
-    name: 'Sinal 9 — Qualidade da comunicação',
+    name: 'Comunicação',
+    icon: 'lucide:message-circle',
+    label: 'Qualidade da comunicação',
     weight: 'Alto peso diagnóstico',
+    insight: [
+      'Comunicação profunda e compartilhamento emocional presentes — sinal muito positivo.',
+      'Conversas ficaram um pouco mais rasas — pode ser fase, rotina ou cansaço.',
+      'Ausência de intimidade verbal indica que a intimidade emocional já foi embora.',
+      'Quando ele para de te contar sobre a própria vida, é porque tem uma vida que não quer te contar.'
+    ],
     interps: [
-      'Comunicação de qualidade mantida. Compartilhamento emocional presente. Sinal muito positivo.',
-      'Leve redução na profundidade das conversas. Pode ser fase, cansaço, rotina. Monitorar.',
-      'Conversas superficiais e ausência de compartilhamento emocional indica desconexão. Quando a intimidade verbal desaparece, a intimidade emocional já foi embora há mais tempo.',
-      'Evasividade sistemática e vida paralela perceptível na comunicação é o sinal mais revelador desta categoria. Quando alguém para de te contar sobre a própria vida, é porque tem uma vida que não quer te contar.'
+      'Vocês ainda conversam de verdade — ele compartilha o que pensa, o que sente, o que aconteceu no dia. Esse tipo de conexão verbal é um dos primeiros a desaparecer quando há envolvimento externo, porque a energia emocional vai para outro lugar. A presença dela aqui é um indicador positivo e relevante.',
+      'As conversas ficaram um pouco mais superficiais. Pode ser rotina, cansaço, fase. Relacionamentos longos passam por isso. O que diferencia uma fase normal de um padrão de alerta é a direção: está melhorando ou piorando? Ele está menos comunicativo com você especificamente, ou com todo mundo?',
+      'As conversas existem, mas ficaram rasas. Ele responde, mas não conta. Está presente, mas não compartilha. Essa separação — estar fisicamente junto mas emocionalmente ausente — é o sinal mais doloroso e mais subestimado. A intimidade verbal some primeiro porque manter duas conexões emocionais profundas ao mesmo tempo é exaustivo. Ele escolheu qual manter.',
+      'Ele parou de te contar sobre a própria vida. Não é que ficou mais reservado em geral — é que ficou específico sobre o que esconde de você. Quem não tem vida paralela não tem o que omitir. O silêncio sobre o dia a dia dele não é timidez. É administração do que você sabe.'
     ]
   },
   {
-    name: 'Sinal 10 — Intuição e percepção interna',
+    name: 'Intuição',
+    icon: 'lucide:eye',
+    label: 'Intuição e percepção interna',
     weight: 'Peso interpretativo',
+    insight: [
+      'Você está tranquila — e sua percepção interna tem valor como dado.',
+      'Dúvida presente, mas esperançosa. Não ignore, mas não decida só por isso.',
+      'Intuição ativa combinada com comportamentos concretos acerta em mais de 70% dos casos.',
+      'Quando você já sabe no fundo, o dossiê não precisa te convencer — precisa te dar estrutura para agir.'
+    ],
     interps: [
-      'Sensação de tranquilidade relatada. A intuição é uma das ferramentas mais confiáveis em relacionamentos. Sua percepção de normalidade é um dado relevante.',
-      'Dúvida presente mas esperançosa. Este estado é comum no início de um processo de percepção de mudança. Não ignore — mas também não decida com base apenas nisso.',
-      'Intuição ativa e alerta é, segundo pesquisas em psicologia relacional, correta em mais de 70% dos casos quando combinada com comportamentos concretos. Você não está ficando louca.',
-      'Certeza interna que busca apenas confirmação é o estado de quem já processou a informação emocionalmente. O dossiê não é o que vai te convencer — você já está convencida. É o que vai te dar o chão para agir.'
+      'Você relatou uma sensação geral de tranquilidade no relacionamento. Isso importa. A intuição de pessoas que vivem relacionamentos próximos é uma fonte de dado real, não irracional. Se você está bem, essa percepção tem peso nesta análise — e ela aponta para baixo risco.',
+      'Você tem dúvida, mas ainda tem esperança de que seja engano seu. Esse estado — querer acreditar que está errada — é completamente humano. Não o ignore, mas também não tome decisões grandes com base só nele. O que este dossiê oferece é um conjunto de dados para você avaliar com mais clareza do que você estava sozinha.',
+      'Você sente que algo está errado. E pesquisas em psicologia relacional mostram que quando a intuição vem acompanhada de comportamentos concretos — e não apenas de ansiedade genérica — ela está certa em mais de 70% dos casos. Você não está ficando louca. Você está percebendo algo real.',
+      'Você já sabe. Não sabe exatamente o quê, não tem os detalhes, não tem como provar — mas no fundo, você já processou. Essa certeza interna que veio antes de qualquer prova é o sinal mais honesto que existe. Este dossiê não está aqui para te convencer do que você já sente. Está aqui para te dar estrutura, clareza e um plano para o que vem a seguir.'
     ]
   }
 ];
@@ -825,52 +948,73 @@ function buildScanReport() {
 
 function buildEvidenciaGaleria() {
   var foto1Html = foto
-    ? '<div class="foto-card">' +
+    ? '<div class="foto-card" style="grid-row:span 1;">' +
         '<img src="' + foto + '" alt="' + Ncap + '">' +
-        '<div class="foto-overlay">Foto enviada · Ref.</div>' +
+        '<div class="foto-overlay">📷 ' + Ncap + ' · Referência</div>' +
       '</div>'
-    : '<div class="foto-card" style="background:rgba(239,35,60,0.08);border:1px solid rgba(239,35,60,0.2);display:flex;align-items:center;justify-content:center;">' +
-        '<iconify-icon icon="lucide:user" width="28" style="color:var(--red);opacity:0.5;"></iconify-icon>' +
+    : '<div class="foto-card" style="background:rgba(239,35,60,0.08);border:1px solid rgba(239,35,60,0.2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">' +
+        '<iconify-icon icon="lucide:user" width="24" style="color:var(--red);opacity:0.5;"></iconify-icon>' +
+        '<span style="font-family:\'Roboto Mono\',monospace;font-size:0.42rem;color:var(--text-dim);text-transform:uppercase;">Sem foto</span>' +
       '</div>';
 
+  var locais = ['Tinder', 'Badoo', 'Instagram', 'Badoo', 'Happn', 'Facebook'];
   var foto2Html =
     '<div class="foto-card borrada">' +
       '<img src="https://randomuser.me/api/portraits/men/' + extraNums[0] + '.jpg" alt="">' +
-      '<div class="foto-lock-badge"><span>BLOQUEADO</span></div>' +
-      '<div class="foto-overlay">Plataforma A</div>' +
+      '<div class="foto-lock-badge"><span>RESTRITO</span></div>' +
+      '<div class="foto-overlay">' + locais[Math.floor(Math.random()*3)] + ' · ' + rnd(86,97) + '% sim.</div>' +
     '</div>';
 
   var foto3Html =
     '<div class="foto-card borrada">' +
       '<img src="https://randomuser.me/api/portraits/men/' + extraNums[1] + '.jpg" alt="">' +
-      '<div class="foto-lock-badge"><span>BLOQUEADO</span></div>' +
-      '<div class="foto-overlay">Plataforma B</div>' +
+      '<div class="foto-lock-badge"><span>RESTRITO</span></div>' +
+      '<div class="foto-overlay">' + locais[Math.floor(Math.random()*3)+3] + ' · ' + rnd(84,95) + '% sim.</div>' +
     '</div>';
 
+  var appDefs = [
+    { name: 'Tinder',  icon: 'simple-icons:tinder',  color: '#FE3C72' },
+    { name: 'Badoo',   icon: 'simple-icons:badoo',   color: '#6A35C2' },
+    { name: 'Meetic',  icon: 'lucide:heart',          color: '#E8003D' },
+    { name: 'Happn',   icon: 'lucide:map-pin',        color: '#01AAED' }
+  ];
+
   var appsHtml = '';
-  if(pKey === 'low' || pKey === 'moderate') {
+  if(pKey === 'low') {
     appsHtml =
       '<div class="app-row r-nenhum">' +
         '<div class="app-dot green"></div>' +
         '<div>' +
-          '<div class="app-name">' + (pKey==='low' ? 'Nenhuma conta localizada' : 'Sem contas ativas encontradas') + '</div>' +
-          '<div class="app-status-text" style="color:var(--text-muted);">' +
-            (pKey==='low'
-              ? 'Varredura em 847+ plataformas — sem registros associados a ' + N
-              : 'Nenhum perfil ativo de ' + N + ' foi localizado nas plataformas indexadas.') +
-          '</div>' +
+          '<div class="app-name">Nenhum perfil localizado</div>' +
+          '<div class="app-status-text" style="color:var(--text-muted);">Varredura em Tinder, Badoo, Happn, Meetic e 800+ plataformas — sem registros associados a ' + N + '.</div>' +
+        '</div>' +
+      '</div>';
+  } else if(pKey === 'moderate') {
+    appsHtml =
+      '<div class="app-row r-nenhum">' +
+        '<div class="app-dot green"></div>' +
+        '<div>' +
+          '<div class="app-name">Sem contas ativas encontradas</div>' +
+          '<div class="app-status-text" style="color:var(--text-muted);">Nenhum perfil ativo de ' + N + ' foi localizado. Isso não exclui contas com dados alterados ou perfis deletados recentemente.</div>' +
         '</div>' +
       '</div>';
   } else {
-    appsHtml = ['Tinder','Badoo','Meetic'].map(function(app){
+    appsHtml = appDefs.map(function(app){
+      var dayAgo = rnd(2, 18);
+      var sim = rnd(86, 97);
+      var statusText = pKey === 'critical'
+        ? 'Perfil ativo detectado &bull; último acesso há ' + dayAgo + ' dias'
+        : 'Conta criada &bull; inativa no momento';
+      var statusColor = pKey === 'critical' ? 'var(--red)' : 'var(--yellow)';
+      var dotCls = pKey === 'critical' ? 'yellow' : 'yellow';
       return (
         '<div class="app-row r-inativo">' +
-          '<div class="app-dot yellow"></div>' +
+          '<div class="app-dot ' + dotCls + '" style="' + (pKey==='critical' ? 'background:var(--red);animation:pulseDot 1.2s ease-in-out infinite;' : '') + '"></div>' +
           '<div style="flex:1;">' +
-            '<div class="app-name">' + app + '</div>' +
-            '<div class="app-status-text" style="color:var(--yellow);">Conta criada · Inativa no momento</div>' +
+            '<div class="app-name">' + app.name + '</div>' +
+            '<div class="app-status-text" style="color:' + statusColor + ';">' + statusText + '</div>' +
           '</div>' +
-          '<div class="app-sim">' + rnd(87,97) + '% sim.</div>' +
+          '<div class="app-sim">' + sim + '% sim.</div>' +
         '</div>'
       );
     }).join('');
@@ -900,16 +1044,24 @@ function buildSignals() {
     var sig = SIGNAL_DATA[i];
     var cls = getSignalClass(v);
     var levelText = v===0?'Baixo': v===1?'Moderado': v===2?'Elevado':'Crítico';
-    var lbl = getAnswerLabel(v);
     var txt = getAnswerText(i, v);
     var interp = sig.interps[v].replace(/\b(ele|o parceiro|o sujeito)\b/gi, N);
+    var insightTxt = sig.insight[v];
     return (
       '<div class="sig-card ' + cls + '">' +
-        '<div class="sig-header">' +
-          '<span class="sig-name">' + sig.name + '</span>' +
+        '<div class="sig-card-top">' +
+          '<div class="sig-icon-wrap ' + cls + '">' +
+            '<iconify-icon icon="' + sig.icon + '" width="16"></iconify-icon>' +
+          '</div>' +
+          '<div class="sig-top-right">' +
+            '<div class="sig-name">' + sig.name + '</div>' +
+            '<div class="sig-label-small">' + sig.label + '</div>' +
+          '</div>' +
           '<span class="sig-level ' + cls + '">' + levelText + '</span>' +
         '</div>' +
-        '<div class="sig-answer">Sua resposta: "' + txt + '"</div>' +
+        '<div class="sig-bar-wrap"><div class="sig-bar-fill ' + cls + '"></div></div>' +
+        '<div class="sig-insight ' + cls + '">' + insightTxt + '</div>' +
+        '<div class="sig-answer">Você respondeu: "' + txt + '"</div>' +
         '<div class="sig-interp">' + interp + '</div>' +
       '</div>'
     );
