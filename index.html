@@ -164,15 +164,17 @@
   /* ---- FOTO GALERIA ---- */
   .foto-galeria {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1.4fr 1fr 1fr;
     gap: 8px;
     margin-bottom: 14px;
+    align-items: stretch;
   }
   .foto-card {
     position: relative;
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: hidden;
     aspect-ratio: 1;
+    background: rgba(0,0,0,0.3);
   }
   .foto-card img {
     width: 100%; height: 100%;
@@ -180,16 +182,16 @@
     display: block;
   }
   .foto-card.borrada img {
-    filter: blur(7px) brightness(0.55) saturate(0.3);
+    filter: blur(8px) brightness(0.45) saturate(0.2);
   }
   .foto-card .foto-overlay {
     position: absolute;
     bottom: 0; left: 0; right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
-    padding: 6px 5px 5px;
+    background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, transparent 100%);
+    padding: 10px 6px 6px;
     font-family: 'Roboto Mono', monospace;
-    font-size: 0.4rem;
-    color: rgba(255,255,255,0.6);
+    font-size: 0.42rem;
+    color: rgba(255,255,255,0.7);
     text-transform: uppercase;
     letter-spacing: 0.06em;
     text-align: center;
@@ -200,19 +202,44 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background: rgba(0,0,0,0.15);
   }
   .foto-card .foto-lock-badge span {
-    background: rgba(0,0,0,0.6);
-    border: 1px solid rgba(239,35,60,0.5);
+    background: rgba(0,0,0,0.75);
+    border: 1px solid rgba(239,35,60,0.6);
     border-radius: 4px;
-    padding: 3px 6px;
+    padding: 4px 8px;
     font-family: 'Roboto Mono', monospace;
-    font-size: 0.42rem;
+    font-size: 0.44rem;
     font-weight: 700;
     color: var(--red);
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
   }
+  .foto-ref-badge {
+    position: absolute;
+    top: 6px; left: 6px;
+    background: rgba(0,0,0,0.7);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.4rem;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .evidencia-nota {
+    background: rgba(239,35,60,0.06);
+    border: 1px solid rgba(239,35,60,0.15);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin-bottom: 14px;
+  }
+  .evidencia-nota strong { color: var(--text); }
 
   /* ---- APP STATUS ---- */
   .app-row {
@@ -948,13 +975,14 @@ function buildScanReport() {
 
 function buildEvidenciaGaleria() {
   var foto1Html = foto
-    ? '<div class="foto-card" style="grid-row:span 1;">' +
+    ? '<div class="foto-card">' +
         '<img src="' + foto + '" alt="' + Ncap + '">' +
-        '<div class="foto-overlay">📷 ' + Ncap + ' · Referência</div>' +
+        '<div class="foto-ref-badge">REF.</div>' +
+        '<div class="foto-overlay">' + Ncap + ' · Foto enviada</div>' +
       '</div>'
-    : '<div class="foto-card" style="background:rgba(239,35,60,0.08);border:1px solid rgba(239,35,60,0.2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">' +
-        '<iconify-icon icon="lucide:user" width="24" style="color:var(--red);opacity:0.5;"></iconify-icon>' +
-        '<span style="font-family:\'Roboto Mono\',monospace;font-size:0.42rem;color:var(--text-dim);text-transform:uppercase;">Sem foto</span>' +
+    : '<div class="foto-card" style="background:rgba(239,35,60,0.06);border:1px solid rgba(239,35,60,0.2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;">' +
+        '<iconify-icon icon="lucide:user" width="28" style="color:var(--red);opacity:0.4;"></iconify-icon>' +
+        '<span style="font-family:\'Roboto Mono\',monospace;font-size:0.4rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;">Sem foto</span>' +
       '</div>';
 
   var locais = ['Tinder', 'Badoo', 'Instagram', 'Badoo', 'Happn', 'Facebook'];
@@ -1020,10 +1048,13 @@ function buildEvidenciaGaleria() {
     }).join('');
   }
 
-  var galeriaTitle = (pKey==='elevated'||pKey==='critical') ? 'Registros Encontrados' : 'Registros da Varredura';
-  var galeriaDesc = (pKey==='elevated'||pKey==='critical')
-    ? 'Imagem de ' + Ncap + ' cruzada com plataformas indexadas. Registros com similaridade acima do limiar de alerta.'
-    : 'Imagem de referência utilizada na varredura de ' + Ncap + ' nas principais bases digitais.';
+  var galeriaTitle = (pKey==='elevated'||pKey==='critical') ? 'Registros Encontrados' : 'Varredura de Imagem';
+
+  var notaHtml = (pKey==='low')
+    ? '<div class="evidencia-nota">A varredura cruzou a imagem enviada com <strong>Tinder, Badoo, Happn, Meetic</strong> e 800+ plataformas indexadas. <strong>Nenhum registro ativo foi localizado</strong> associado ao rosto de ' + Ncap + '.</div>'
+    : (pKey==='moderate')
+    ? '<div class="evidencia-nota">A imagem foi processada e cruzada com as principais plataformas. <strong>Nenhum perfil ativo foi encontrado</strong> — isso não descarta contas com dados alterados ou excluídas recentemente.</div>'
+    : '<div class="evidencia-nota" style="border-color:rgba(239,35,60,0.3);background:rgba(239,35,60,0.08);">A varredura identificou <strong style="color:var(--red);">correspondências acima do limiar de alerta</strong> em múltiplas plataformas. Os registros completos estão listados abaixo.</div>';
 
   return (
     '<div class="sec-block red-accent mb-14">' +
@@ -1031,9 +1062,9 @@ function buildEvidenciaGaleria() {
         '<div class="sec-icon"><iconify-icon icon="lucide:camera" width="14"></iconify-icon></div>' +
         galeriaTitle +
       '</div>' +
-      '<div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:12px;line-height:1.5;">' + galeriaDesc + '</div>' +
+      notaHtml +
       '<div class="foto-galeria">' + foto1Html + foto2Html + foto3Html + '</div>' +
-      '<div class="sec-divider"><div class="sec-divider-line"></div><div class="sec-divider-label">Status em apps</div><div class="sec-divider-line"></div></div>' +
+      '<div class="sec-divider"><div class="sec-divider-line"></div><div class="sec-divider-label">Status em apps de relacionamento</div><div class="sec-divider-line"></div></div>' +
       appsHtml +
     '</div>'
   );
